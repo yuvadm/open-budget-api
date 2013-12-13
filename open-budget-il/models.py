@@ -65,3 +65,15 @@ class SearchHelper(ndb.Model):
     value = ndb.StringProperty()
     priority = ndb.IntegerProperty()
     tokens = ndb.StringProperty(repeated=True)
+
+class Comment(ndb.Model):
+    obj = ndb.KeyProperty()
+    text = ndb.TextProperty()
+    user = ndb.StringProperty()
+    created = ndb.DateTimeProperty(auto_now_add=True)
+
+class Tag(ndb.Model):
+    obj = ndb.KeyProperty()
+    name = ndb.StringProperty()
+    slug = ndb.StringProperty()
+    user = ndb.StringProperty()
