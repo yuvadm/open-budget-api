@@ -11,7 +11,8 @@ import logging
 from google.appengine.api import memcache
 from google.appengine.ext import ndb
 
-from models import BudgetLine, SupportLine, ChangeLine, SearchHelper
+from models import BudgetLine, SupportLine, ChangeLine, SearchHelper, Comment, Tag
+
 
 INFLATION = {1992: 2.338071159424868,
  1993: 2.1016785142253185,
@@ -194,6 +195,13 @@ class BudgetApi(GenericApi):
                 lines = BudgetLine.query(BudgetLine.code.IN(parent_codes),BudgetLine.year==year)
         else:
             lines = BudgetLine.query(BudgetLine.code==code).order(BudgetLine.year)
+        ret = [ x.to_dict() for x in lines ]
+        for r in ret:
+            r.update({
+                'comments': [comment.to_dict(exclude=['obj', 'created']) for comment in Comment.query(Comment.obj==x.key)],
+                'tags': [tag.to_dict(exclude=['obj']) for tag in Tag.query(Tag.obj==x.key)]
+            })
+            print r
         return lines
 
 class ChangesApi(GenericApi):
